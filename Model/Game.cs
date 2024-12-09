@@ -4,7 +4,11 @@ namespace Sokoban.Model;
 
 public static class Game
 {
-    private static string gameMap = "";
+    private const string gameMap = @"
+WWWWWWWWWW
+W        W
+W        W
+WWWWWWWWWW";
     public static ICreature[,] Map;
 	public static int Scores;
 	public static bool IsOver;

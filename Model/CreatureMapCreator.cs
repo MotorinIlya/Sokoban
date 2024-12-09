@@ -11,7 +11,7 @@ public static class CreatureMapCreator
 
 	public static ICreature[,] CreateMap(string map, string separator = "\r\n")
 	{
-		var rows = map.Split(new[] {separator, "\n"}, StringSplitOptions.RemoveEmptyEntries);
+		var rows = map.Split([separator, "\n"], StringSplitOptions.RemoveEmptyEntries);
 		if (rows.Select(z => z.Length).Distinct().Count() != 1)
 			throw new Exception($"Wrong test map '{map}'");
 		var result = new ICreature[rows[0].Length, rows.Length];
@@ -43,10 +43,9 @@ public static class CreatureMapCreator
 		return c switch
 		{
 			'P' => CreateCreatureByTypeName("Player"),
-			'T' => CreateCreatureByTypeName("Terrain"),
-			'G' => CreateCreatureByTypeName("Gold"),
-			'S' => CreateCreatureByTypeName("Sack"),
-			'M' => CreateCreatureByTypeName("Monster"),
+			'W' => CreateCreatureByTypeName("Wall"),
+			'B' => CreateCreatureByTypeName("Box"),
+			'X' => CreateCreatureByTypeName("PlaceBox"),
 			' ' => null,
 			_ => throw new Exception($"wrong character for ICreature {c}")
 		};

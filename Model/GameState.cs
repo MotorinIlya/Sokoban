@@ -7,7 +7,7 @@ namespace Sokoban.Model;
 
 public class GameState
 {
-	public const int ElementSize = 32;
+	public const int ElementSize = 30;
 	public List<CreatureAnimation> Animations = new();
 
 	public void BeginAct()

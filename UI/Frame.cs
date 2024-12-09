@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Timers;
@@ -5,6 +6,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Threading;
 using Sokoban.Model;
 
 namespace Sokoban.UI;
@@ -18,12 +20,12 @@ public class Frame : UserControl
     public Frame()
     {
         gameState = new GameState();
-        var imagesDirectory = new DirectoryInfo("Images");
+        var imagesDirectory = new DirectoryInfo("/home/motorog/kontur/Sokoban/Images");
         foreach (var e in imagesDirectory.GetFiles("*.png"))
             bitmaps[e.Name] = new Bitmap(e.FullName);
-        var timer = new Timer();
-        timer.Interval = 15;
-        timer.Elapsed += TimerTick;
+        var timer = new DispatcherTimer();
+        timer.Interval = TimeSpan.FromMilliseconds(15);
+        timer.Tick += TimerTick;
         timer.Start();
     }
 
@@ -40,7 +42,7 @@ public class Frame : UserControl
         // e.DrawText(Brushes.Green, new Point(), f);
     }
 
-    private void TimerTick(object sender, ElapsedEventArgs args)
+    private void TimerTick(object? sender, EventArgs args)
     {
         if (tickCount == 0) gameState.BeginAct();
         foreach (var e in gameState.Animations)
