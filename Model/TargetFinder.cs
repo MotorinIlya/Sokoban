@@ -5,11 +5,11 @@ namespace Sokoban.Model;
 
 public class TargetFinder
 {
-    private List<(int, int)> _coordiinates;
+    private List<(int, int)> _coordinates;
 
     public TargetFinder()
     {
-        _coordiinates = [];
+        _coordinates = [];
     }
 
     public void AddTargets(char[,] map)
@@ -20,7 +20,7 @@ public class TargetFinder
             {
                 if (map[i, j] == 'T')
                 {
-                    _coordiinates.Add((i , j));
+                    _coordinates.Add((i, j));
                 }
             }
         }
@@ -28,7 +28,7 @@ public class TargetFinder
 
     public bool IsTargetPosition(int y, int x)
     {
-        foreach (var coord in _coordiinates)
+        foreach (var coord in _coordinates)
         {
             var (pos_y, pos_x) = coord;
             if (pos_y == y && pos_x == x)
@@ -38,4 +38,19 @@ public class TargetFinder
         }
         return false;
     }
+
+    public bool CheckWin(char[,] map)
+    {
+        foreach (var coord in _coordinates)
+        {
+            var (pos_y, pos_x) = coord;
+            if (map[pos_y, pos_x] == Blocks.Target)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public void Clear() => _coordinates.Clear();
 }

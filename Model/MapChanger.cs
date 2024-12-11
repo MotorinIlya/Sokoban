@@ -2,23 +2,17 @@ namespace Sokoban.Model;
 
 public class MapChanger
 {
-    private TargetFinder _targetFinder;
-    private char[,] _map =
-    {
-        { '#', '#', '#', '#', '#', '#', '#' },
-        { '#', '.', '.', '.', 'T', '.', '#' },
-        { '#', '.', '#', '.', 'B', '.', '#' },
-        { '#', '.', '.', 'P', 'B', '.', '#' },
-        { '#', '.', '#', '#', '.', '.', '#' },
-        { '#', '.', '.', '.', '.', '.', '#' },
-        { '#', '#', '#', '#', '#', '#', '#' },
-    };
-
-    private int _playerX = 3;
-    private int _playerY = 3;
-
     public MapChanger()
     {
+        _levelManager = new LevelManager(_levelDirectory);
+        if (_levelManager.HaveNextLevel())
+        {
+            _map = _levelManager.LoadLevel();
+        }
+        else
+        {
+            _map = _levelManager.LoadDefaultLevel();
+        }
         _targetFinder = new TargetFinder();
         _targetFinder.AddTargets(_map);
     }
@@ -54,7 +48,7 @@ public class MapChanger
         {
             _map[_playerY, _playerX] = Blocks.Target;
         }
-        else 
+        else
         {
             _map[_playerY, _playerX] = Blocks.Floor;
         }
@@ -62,7 +56,40 @@ public class MapChanger
         _playerX = newX;
     }
 
+    public void LoadLevel()
+    {
+        _map = _levelManager.LoadLevel();
+        _targetFinder.Clear();
+        _targetFinder.AddTargets(_map);
+        ChangePlayerPosition();
+    }
+
+    public bool HaveNextLevel() => _levelManager.HaveNextLevel();
+    public bool CheckWin() => _targetFinder.CheckWin(_map);
     public char GetPosition(int y, int x) => _map[y, x];
     public int WidthMap => _map.GetLength(1);
     public int HeightMap => _map.GetLength(0);
+
+    private readonly string _levelDirectory = "./Levels";
+    private TargetFinder _targetFinder;
+    private LevelManager _levelManager;
+    private char[,] _map;
+
+    private int _playerX = 3;
+    private int _playerY = 3;
+    private void ChangePlayerPosition()
+    {
+        for (var i = 0; i < _map.GetLength(0); i++)
+        {
+            for (var j = 0; j < _map.GetLength(1); j++)
+            {
+                if (_map[i, j] == Blocks.Player)
+                {
+                    _playerY = i;
+                    _playerX = j;
+                    break;
+                }
+            }
+        }
+    }
 }

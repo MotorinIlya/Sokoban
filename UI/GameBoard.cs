@@ -3,6 +3,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 using Sokoban.Model;
 
 namespace Sokoban.UI;
@@ -55,6 +56,14 @@ public class GameBoard : UserControl
     private void MovePlayer(int dx, int dy)
     {
         _mapChanger.ChangeMap(dy, dx);
+        if (_mapChanger.CheckWin())
+        {
+            ShowWinMessage();
+            if (_mapChanger.HaveNextLevel())
+            {
+                _mapChanger.LoadLevel();
+            }
+        }
     }
 
     public override void Render(DrawingContext context)
@@ -70,5 +79,41 @@ public class GameBoard : UserControl
                 context.DrawRectangle(new Pen(Brushes.Black, 1), rect);
             }
         }
+    }
+
+    private void ShowWinMessage()
+    {
+        var winDialog = new Window
+        {
+            Width = 300,
+            Height = 200,
+            Title = "Congratulations!",
+            Content = new StackPanel
+            {
+                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Center,
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
+                Children =
+                {
+                    new TextBlock
+                    {
+                        Text = "You won!",
+                        FontSize = 24,
+                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+                    },
+                    new Button
+                    {
+                        Content = "OK",
+                        Width = 100,
+                        Margin = new Thickness(0, 20, 0, 0),
+                        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center
+                    }
+                }
+            }
+        };
+
+        var okButton = (Button)((StackPanel)winDialog.Content).Children[1];
+        okButton.Click += (_, _) => winDialog.Close();
+
+        _ = winDialog.ShowDialog(this.GetVisualRoot() as Window);
     }
 }
