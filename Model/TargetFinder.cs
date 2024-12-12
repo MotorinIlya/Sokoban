@@ -44,7 +44,7 @@ public class TargetFinder
         foreach (var coord in _coordinates)
         {
             var (pos_y, pos_x) = coord;
-            if (map[pos_y, pos_x] == Blocks.Target)
+            if (map[pos_y, pos_x] == Blocks.Target || map[pos_y, pos_x] == Blocks.Player)
             {
                 return false;
             }
